@@ -196,6 +196,7 @@ void move() //確定下一個方向為何
 	SnakeMove(x, y); //執行讓蛇移動的副程式
 }
 
+
 int check(void)
 {
 	int i;
@@ -255,6 +256,41 @@ int check(void)
 	{
 		return 1;
 	}
+}
+
+
+void welcome()  //歡迎介面
+{
+	gotoxy(0, 0);  //跳到螢幕的最上方座標再印出規則
+	printf("歡迎來到[貪吃蛇 Snake] !\n\n");
+	printf("規則如下:\n");
+	printf("1.用上下左右鍵操控貪吃蛇\n");
+	printf("2.蛇若碰到自己也視為失敗\n");
+	printf("3.隨著分數增加，蛇也會越跑越快喔 !");
+}
+
+
+void GameLevel()
+{
+	int out, level;
+	gotoxy(0, 7);
+	printf("輸入遊戲難度1~5(1為最簡單，5為最困難)：");
+	scanf_s("%d", &level);
+	clrscr();
+	fflush(stdin);
+
+	//遊戲介面
+	gotoxy(0, 0);
+	DrawMap();
+	CreateSnake();
+	do
+	{
+		CreateFood();
+		move();
+		Sleep(SPEED - (20 * snake.len * level)); //控制蛇停止的時間來控制其速度
+		out = check(); //檢查是勝利還是失敗，都不是的話就繼續while迴圈
+	} while (out == 1);
+>>>>>>> 34be320c5348cb45d00fef50aa37c5d1b1a4e2c9
 }
 
 int main(void)
