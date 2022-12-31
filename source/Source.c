@@ -290,7 +290,7 @@ void GameLevel()
 		Sleep(SPEED - (20 * snake.len * level)); //控制蛇停止的時間來控制其速度
 		out = check(); //檢查是勝利還是失敗，都不是的話就繼續while迴圈
 	} while (out == 1);
->>>>>>> 34be320c5348cb45d00fef50aa37c5d1b1a4e2c9
+
 }
 
 int main(void)
