@@ -196,6 +196,79 @@ void move() //確定下一個方向為何
 	SnakeMove(x, y); //執行讓蛇移動的副程式
 }
 
+
+int check(void)
+{
+	int i;
+	int stop = 0;  //遊戲停止，stop=1
+
+	// 失敗條件1：蛇撞到牆
+	if (snake.x_buf[0] == 0 | snake.x_buf[0] == WIDTH + 4 | snake.y_buf[0] == 0 | snake.y_buf[0] == HIGH + 2)
+	{
+		printf("Game Over!\n");
+		stop = 1;
+	}
+	else
+	{
+		// 失敗條件2：蛇撞到自己
+		for (i = 1; i < snake.len; i++)  //用迴圈檢查蛇的頭是否與身體重合
+		{
+			if (snake.x_buf[0] == snake.x_buf[i] && snake.y_buf[0] == snake.y_buf[i])
+			{
+				printf("You lose!\n");
+				stop = 1;
+			}
+		}
+
+		// 勝利條件
+		if (snake.len == SNAKE_MAX_LENGHT)  //蛇的長度100
+		{
+			printf("You win!\n");
+			stop = 1;
+		}
+
+		// 列印得分
+		else
+		{
+			gotoxy(0, HIGH + 6);  //定位點移至(0,16)列印得分的地方
+			printf("Your score: %d", snake.score);
+		}
+	}
+	if (stop)  //stop=1，遊戲停止
+	{
+		history[playtimes] = snake.score;  //儲存遊戲歷史紀錄
+		gotoxy(0, HIGH + 7);  //定位點移置(0,17)
+		printf("輸入1以重新玩遊戲：");
+		scanf_s("%d", &conti);
+		if (conti == 1)  //要繼續遊戲
+		{
+			clrscr();  //去除之前顯示的文字，清空螢幕(清除文本函數)
+			gotoxy(0, 0);  //定位點移置(0,0)
+			food_flag = 0;  //食物不存在
+		}
+		else  //不要繼續遊戲
+		{
+			exit(0);  //正常退出遊戲
+		}
+		return 0;
+	}
+	else  //stop=0，遊戲還沒結束
+	{
+		return 1;
+	}
+}
+
+
+void welcome()  //歡迎介面
+{
+	gotoxy(0, 0);  //跳到螢幕的最上方座標再印出規則
+	printf("歡迎來到[貪吃蛇 Snake] !\n\n");
+	printf("規則如下:\n");
+	printf("1.用上下左右鍵操控貪吃蛇\n");
+	printf("2.蛇若碰到自己也視為失敗\n");
+	printf("3.隨著分數增加，蛇也會越跑越快喔 !");
+}
+
 void HistoryRecord() //顯示歷史紀錄
 {
 	gotoxy(0, 9);//跳到座標(0,9)顯示
@@ -214,6 +287,28 @@ void HistoryRecord() //顯示歷史紀錄
 	}
 }
 
+void GameLevel()
+{
+	int out, level;
+	gotoxy(0, 7);
+	printf("輸入遊戲難度1~5(1為最簡單，5為最困難)：");
+	scanf_s("%d", &level);
+	clrscr();
+	fflush(stdin);
+
+	//遊戲介面
+	gotoxy(0, 0);
+	DrawMap();
+	CreateSnake();
+	do
+	{
+		CreateFood();
+		move();
+		Sleep(SPEED - (20 * snake.len * level)); //控制蛇停止的時間來控制其速度
+		out = check(); //檢查是勝利還是失敗，都不是的話就繼續while迴圈
+	} while (out == 1);
+}
+
 int main(void)
 {
 	while (1)
@@ -224,4 +319,6 @@ int main(void)
 		playtimes += 1; //遊玩次數加一
 	}
 }
+
+
 
